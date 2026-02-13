@@ -1,4 +1,4 @@
-import { Heart, Code2 } from 'lucide-react';
+import { Code2 } from 'lucide-react';
 
 const currentYear = new Date().getFullYear();
 
