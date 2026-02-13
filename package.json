@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "node node_modules/typescript/bin/tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "vercel-build": "npm ci && npm run build"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
