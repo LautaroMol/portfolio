@@ -1,7 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Send, Mail, MapPin, Linkedin, Github, CheckCircle, Loader, AlertTriangle } from 'lucide-react';
+import {
+  Send,
+  Mail,
+  MapPin,
+  Linkedin,
+  Github,
+  CheckCircle,
+  Loader,
+  AlertTriangle,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -19,7 +28,7 @@ const contactInfo = [
   {
     icon: MapPin,
     label: 'Ubicación',
-    value: 'Argentina,Cordoba',
+    value: 'Argentina, Córdoba',
     href: '#',
   },
   {
@@ -34,7 +43,7 @@ export function Contact() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  
+
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,14 +56,13 @@ export function Contact() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Title animation
       gsap.fromTo(
         titleRef.current,
-        { opacity: 0, y: 50 },
+        { opacity: 0, y: 40 },
         {
           opacity: 1,
           y: 0,
-          duration: 1,
+          duration: 0.9,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: titleRef.current,
@@ -64,14 +72,13 @@ export function Contact() {
         }
       );
 
-      // Content animation
       gsap.fromTo(
         contentRef.current,
-        { opacity: 0, y: 60 },
+        { opacity: 0, y: 50 },
         {
           opacity: 1,
           y: 0,
-          duration: 1,
+          duration: 0.9,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: contentRef.current,
@@ -100,25 +107,29 @@ export function Contact() {
       time: new Date().toLocaleString(),
     };
 
-    emailjs.send(
+    emailjs
+      .send(
         import.meta.env.VITE_EMAILJS_SERVICE_ID,
         import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
         templateParams,
         import.meta.env.VITE_EMAILJS_PUBLIC_KEY
       )
-      .then((response) => {
-        console.log('SUCCESS!', response.status, response.text);
-        setIsSubmitted(true);
-        setFormData({ name: '', email: '', message: '' });
-      }, (err) => {
-        console.log('FAILED...', err);
-        setError('Hubo un error al enviar el mensaje. Por favor, intenta de nuevo más tarde.');
-      })
+      .then(
+        () => {
+          setIsSubmitted(true);
+          setFormData({ name: '', email: '', message: '' });
+        },
+        () => {
+          setError(
+            'Hubo un error al enviar el mensaje. Por favor, intenta de nuevo más tarde.'
+          );
+        }
+      )
       .finally(() => {
         setIsSubmitting(false);
         setTimeout(() => {
-            setIsSubmitted(false);
-            setError(null);
+          setIsSubmitted(false);
+          setError(null);
         }, 5000);
       });
   };
@@ -134,26 +145,28 @@ export function Contact() {
     <section
       id="contact"
       ref={sectionRef}
-      className="relative py-24 lg:py-32 overflow-hidden"
+      className="relative min-h-screen flex items-center pt-28 pb-24 lg:py-32 overflow-hidden"
     >
-      {/* Background */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-primary/5 rounded-full blur-[150px]" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[120px]" />
+      {/* Polar Star / Summit glow */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div
+          className="absolute top-16 left-1/2 -translate-x-1/2 w-[560px] h-[340px]"
+          style={{
+            background:
+              'radial-gradient(ellipse at center, rgba(99, 102, 241, 0.16) 0%, transparent 70%)',
+          }}
+        />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 w-full">
         {/* Section Header */}
-        <div ref={titleRef} className="text-center mb-16 lg:mb-20">
-          <span className="inline-block px-4 py-2 mb-6 text-sm font-medium text-primary bg-primary/10 rounded-full border border-primary/20">
-            Contacto
-          </span>
+        <div ref={titleRef} className="text-center mb-14 lg:mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
             Trabajemos <span className="text-gradient">Juntos</span>
           </h2>
           <p className="max-w-2xl mx-auto text-lg text-muted-foreground">
-            ¿Tienes un proyecto en mente? Estoy disponible para colaborar 
-            y crear soluciones innovadoras.
+            ¿Tienes un proyecto en mente? Estoy disponible para colaborar y crear
+            soluciones innovadoras.
           </p>
         </div>
 
@@ -163,7 +176,7 @@ export function Contact() {
           <div className="lg:col-span-2 space-y-6">
             <div className="p-6 lg:p-8 rounded-2xl glass">
               <h3 className="text-xl font-semibold mb-6">Información de contacto</h3>
-              
+
               <div className="space-y-4">
                 {contactInfo.map((item) => (
                   <a
@@ -177,8 +190,10 @@ export function Contact() {
                       <item.icon className="w-5 h-5" />
                     </div>
                     <div>
-                      <p className="text-xs text-muted-foreground uppercase tracking-wide">{item.label}</p>
-                      <p className="text-sm font-medium">{item.value}</p>
+                      <p className="text-xs text-muted-foreground uppercase tracking-wide">
+                        {item.label}
+                      </p>
+                      <p className="text-sm font-medium break-all">{item.value}</p>
                     </div>
                   </a>
                 ))}
@@ -193,6 +208,7 @@ export function Contact() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-3 rounded-xl bg-white/5 text-muted-foreground hover:text-foreground hover:bg-white/10 transition-all duration-300"
+                    aria-label="GitHub"
                   >
                     <Github className="w-5 h-5" />
                   </a>
@@ -201,6 +217,7 @@ export function Contact() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-3 rounded-xl bg-white/5 text-muted-foreground hover:text-foreground hover:bg-white/10 transition-all duration-300"
+                    aria-label="LinkedIn"
                   >
                     <Linkedin className="w-5 h-5" />
                   </a>
@@ -213,14 +230,16 @@ export function Contact() {
           <div className="lg:col-span-3">
             <div className="p-6 lg:p-8 rounded-2xl glass">
               <h3 className="text-xl font-semibold mb-6">Envíame un mensaje</h3>
-              
+
               {isSubmitted ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <div className="p-4 mb-4 rounded-full bg-green-500/20">
                     <CheckCircle className="w-12 h-12 text-green-400" />
                   </div>
                   <h4 className="text-xl font-semibold mb-2">¡Mensaje enviado!</h4>
-                  <p className="text-muted-foreground">Gracias por contactarme. Te responderé pronto.</p>
+                  <p className="text-muted-foreground">
+                    Gracias por contactarme. Te responderé pronto.
+                  </p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -256,7 +275,7 @@ export function Contact() {
                       />
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <label htmlFor="message" className="text-sm font-medium">
                       Mensaje
@@ -275,8 +294,8 @@ export function Contact() {
 
                   {error && (
                     <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 text-red-400">
-                        <AlertTriangle className="w-5 h-5" />
-                        <p className="text-sm">{error}</p>
+                      <AlertTriangle className="w-5 h-5" />
+                      <p className="text-sm">{error}</p>
                     </div>
                   )}
 
@@ -286,15 +305,15 @@ export function Contact() {
                     className="w-full sm:w-auto px-8 py-6 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? (
-                        <>
-                            <Loader className="w-4 h-4 mr-2 animate-spin" />
-                            Enviando...
-                        </>
+                      <>
+                        <Loader className="w-4 h-4 mr-2 animate-spin" />
+                        Enviando...
+                      </>
                     ) : (
-                        <>
-                            <Send className="w-4 h-4 mr-2" />
-                            Enviar mensaje
-                        </>
+                      <>
+                        <Send className="w-4 h-4 mr-2" />
+                        Enviar mensajeb
+                      </>
                     )}
                   </Button>
                 </form>

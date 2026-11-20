@@ -2,26 +2,29 @@ import { useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Navigation } from './components/Navigation';
+import { StarrySky } from './components/StarrySky';
+import { FloorIndicator } from './components/FloorIndicator';
 import { Hero } from './sections/Hero';
 import { Technologies } from './sections/Technologies';
 import { Projects } from './sections/Projects';
 import { Contact } from './sections/Contact';
-import { Footer } from './sections/Footer';
 
 gsap.registerPlugin(ScrollTrigger);
 
 function App() {
   useEffect(() => {
-    // Smooth scroll behavior
-    document.documentElement.style.scrollBehavior = 'smooth';
-
-    // Initialize GSAP defaults
     gsap.defaults({
       ease: 'power3.out',
       duration: 1,
+      force3D: true,
     });
 
-    // Refresh ScrollTrigger on load
+    // Start the journey cleanly framed on #hero (bottom horizon)
+    const heroEl = document.getElementById('hero');
+    if (heroEl && !window.location.hash) {
+      heroEl.scrollIntoView({ behavior: 'instant' as ScrollBehavior });
+    }
+
     ScrollTrigger.refresh();
 
     return () => {
@@ -30,34 +33,32 @@ function App() {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
-      {/* Global Background */}
-      <div className="fixed inset-0 pointer-events-none">
-        {/* Subtle noise texture */}
-        <div 
-          className="absolute inset-0 opacity-[0.015]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-          }}
-        />
-        
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-background/95" />
-      </div>
+    <div className="relative min-h-screen bg-[#02030a] text-foreground overflow-x-hidden">
+      {/* Night sky gradient from deep cosmos (top) to midnight horizon (bottom) */}
+      <div
+        className="fixed inset-0 pointer-events-none z-0"
+        style={{
+          background:
+            'linear-gradient(to bottom, #02030a 0%, #050819 40%, #090e29 78%, #0f1638 100%)',
+        }}
+      />
 
-      {/* Navigation */}
+      {/* Interactive Starry Sky Canvas */}
+      <StarrySky />
+
+      {/* Top Navigation */}
       <Navigation />
 
-      {/* Main Content */}
-      <main className="relative z-10">
-        <Hero />
-        <Technologies />
-        <Projects />
-        <Contact />
-      </main>
+      {/* Side Floor Elevator */}
+      <FloorIndicator />
 
-      {/* Footer */}
-      <Footer />
+      {/* Main Content: Ordered from highest sky (top) down to horizon silhouette (bottom) */}
+      <main className="relative z-10">
+        <Contact />
+        <Projects />
+        <Technologies />
+        <Hero />
+      </main>
     </div>
   );
 }

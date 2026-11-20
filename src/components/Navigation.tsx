@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { gsap } from 'gsap';
 import { Menu, X } from 'lucide-react';
+import { scrollToSection } from '@/lib/scroll';
 
 const navItems = [
   { label: 'Inicio', href: '#hero' },
@@ -36,10 +37,7 @@ export function Navigation() {
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setIsMobileMenuOpen(false);
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    scrollToSection(href, 500);
   };
 
   return (
